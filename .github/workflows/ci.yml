@@ -19,14 +19,20 @@ jobs:
       - name: Git clone
         uses: actions/checkout@v1
 
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v1
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install / upgrade pip
+        run: python -m pip install --upgrade pip setuptools
+      - name: Install HTTPie
+        run: pip install --upgrade httpie
+
       - name: Setup Docker ${{ matrix.docker-channel }} ${{ matrix.docker-version }}
         uses: docker-practice/actions-setup-docker@master
         with:
           docker_version: ${{ matrix.docker-version }}
           docker_channel: ${{ matrix.docker-channel }}
-      - name: Test Docker ${{ matrix.docker-channel }} ${{ matrix.docker-version }}
-        run: |
-          cd $GITHUB_WORKSPACE && docker version
 
       - name: Setup NodeJS ${{ matrix.nodejs-version }}
         uses: actions/setup-node@v1
@@ -42,7 +48,7 @@ jobs:
       - name: Install npm apps (wait-port)
         run: npm install -g wait-port
 
-      - name: Setup java
+      - name: Setup java ${{ matrix.java }}
         uses: actions/setup-java@v1
         with:
           java-version: ${{ matrix.java }}
@@ -54,71 +60,16 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-${{ matrix.os }}-maven-
       - name: Build maven apps
-        run: cd $GITHUB_WORKSPACE && ./mvnw clean package
-      #- name: Run maven apps
-      #  run: java -jar $GITHUB_WORKSPACE/target/*.jar || echo 'oops...'
-
-  windows:
-    strategy:
-      matrix:
-        java: [11]
-        os: [windows-latest]
-        nodejs-version: [12]
-        python-version: [3.8]
-        gradle-version: [6.2]
-        maven-version: [3.6.3]
-        docker-channel: [stable]
-        docker-version: [19.09]
-        #docker_version: [19.09, 19.03]
-    name: Java ${{ matrix.java }} on ${{ matrix.os }}
-    runs-on: ${{ matrix.os }}
-
-    steps:
-      - name: Git clone
-        uses: actions/checkout@v1
-
-      - name: Setup Docker ${{ matrix.docker-channel }} ${{ matrix.docker-version }}
-        uses: docker-practice/actions-setup-docker@master
-        with:
-          docker_version: ${{ matrix.docker-version }}
-          docker_channel: ${{ matrix.docker-channel }}
-      - name: Test Docker
-        shell: cmd
         run: |
-          cd %GITHUB_WORKSPACE% & docker version
+          cd $GITHUB_WORKSPACE && ./mvnw clean package
+          cd $GITHUB_WORKSPACE && ./mvnw -f ui docker:build
+      - name: Run maven apps
+        run: |
+          cd $GITHUB_WORKSPACE && ./mvnw -f ui docker:start
+          wait-port 8080
+      - name: Test maven apps
+        run: http :8080/ui/
+      - name: Stop maven apps
+        run: cd $GITHUB_WORKSPACE && ./mvnw -f ui docker:stop docker:remove
 
-      - name: Setup NodeJS ${{ matrix.nodejs-version }}
-        uses: actions/setup-node@v1
-        with:
-          node-version: ${{ matrix.nodejs-version }}
-      - name: Cache npm
-        uses: actions/cache@v1
-        with:
-          path: ~/.npm
-          key: ${{ runner.os }}-${{ matrix.os }}-npm-
-          restore-keys: |
-            ${{ runner.os }}-${{ matrix.os }}-npm-
-      - name: Install npm apps (wait-port)
-        run: npm install -g wait-port
-
-      - name: Setup java ${{ matrix.java }}
-        uses: actions/setup-java@v1
-        with:
-          java-version: ${{ matrix.java }}
-      - name: Cache maven deps
-        uses: actions/cache@v1
-        with:
-          path: ~/.m2
-          key: ${{ runner.os }}-${{ matrix.os }}-maven-
-          restore-keys: |
-            ${{ runner.os }}-${{ matrix.os }}-maven-
-      - name: Build maven apps
-        shell: cmd
-        run: cd %GITHUB_WORKSPACE% & call mvnw.cmd clean package
-      #- name: Test maven apps
-      #  shell: cmd
-      #  run: |
-      #    @chcp 65001>nul
-      #    java -Dfile.encoding="UTF-8" -jar %GITHUB_WORKSPACE%\target\*.jar ...
-      #    echo wait-port 7070...
-      #    sleep 5s
+## windows doesn't support by docker plugin docker-practice/actions-setup-docker@master is only Support linux platform, this platform is win32

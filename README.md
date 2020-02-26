@@ -2,6 +2,21 @@
 
 Status: IN PROGRESS
 
+## start
+
 ```bash
 ./mvnw
+./mvnw -f ui docker:build docker:start
+./mvnw -f ui docker:stop docker:remove
 ```
+
+## cleanup
+
+```bash
+docker rm -f -v `docker ps -aq`
+docker rmi -f daggerok/ui daggerok/greetings daggerok/names
+```
+
+<!--
+topics: jib + war
+-->

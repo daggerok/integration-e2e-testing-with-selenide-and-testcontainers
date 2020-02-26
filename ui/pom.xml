@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <parent>
+    <artifactId>complex-selenide-testcontainers-e2e-testing</artifactId>
+    <groupId>org.example</groupId>
+    <version>1.0.0-SNAPSHOT</version>
+  </parent>
+
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>ui</artifactId>
+  <packaging>war</packaging>
+  <name>${project.parent.artifactId}.${project.artifactId}</name>
+
+  <dependencies>
+    <dependency>
+      <groupId>jakarta.platform</groupId>
+      <artifactId>jakarta.jakartaee-api</artifactId>
+      <version>${jakarta.jakartaee-api.version}</version>
+      <scope>provided</scope>
+    </dependency>
+  </dependencies>
+  
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>io.fabric8</groupId>
+        <artifactId>docker-maven-plugin</artifactId>
+        <version>${docker-maven-plugin.version}</version>
+        <configuration>
+          <follow>false</follow>
+          <verbose>true</verbose>
+          <useColor>true</useColor>
+          <logDate>default</logDate>
+          <autoPull>always</autoPull>
+          <keepRunning>false</keepRunning>
+          <watchInterval>500</watchInterval>
+          <allContainers>true</allContainers>
+          <removeVolumes>true</removeVolumes>
+          <autoCreateCustomNetworks>true</autoCreateCustomNetworks>
+          <!--<autoCreateCustomNetworks>false</autoCreateCustomNetworks>-->
+          <images>
+            <image>
+              <name>daggerok/${project.parent.artifactId}-${project.artifactId}:${project.version}</name>
+              <run>
+                <imagePullPolicy>Never</imagePullPolicy>
+                <ports>
+                  <port>8080:8080</port>
+                </ports>
+                <wait>
+                  <!--<http>
+                    <url>http://127.0.0.1:8080/ui/</url>
+                    <method>GET</method>
+                    <status>200..399</status>
+                  </http>-->
+                  <time>10000</time>
+                  <healthy>true</healthy>
+                  <shutdown>500</shutdown>
+                </wait>
+              </run>
+            </image>
+          </images>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+</project>
