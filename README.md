@@ -7,7 +7,15 @@ Status: IN PROGRESS
 ```bash
 ./mvnw
 ./mvnw -f ui docker:build docker:start
-./mvnw -f ui docker:stop docker:remove
+#./mvnw -f ui docker:stop docker:remove
+```
+
+## test
+
+```bash
+http :8080/ui/
+http :8080/ui/v1/api/names
+http :8080/ui/v1/api/greetings
 ```
 
 ## cleanup

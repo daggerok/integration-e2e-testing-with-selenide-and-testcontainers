@@ -18,14 +18,16 @@
     <lombok.version>1.18.12</lombok.version>
     <assertj.version>3.15.0</assertj.version>
     <junit-jupiter.version>5.6.0</junit-jupiter.version>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <maven-failsafe-plugin.version>3.0.0-M4</maven-failsafe-plugin.version>
-    <maven-surefire-plugin.version>3.0.0-M4</maven-surefire-plugin.version>
     <maven-war-plugin.version>3.2.3</maven-war-plugin.version>
-    <jakarta.jakartaee-api.version>8.0.0</jakarta.jakartaee-api.version>
     <jib-maven-plugin.version>2.1.0</jib-maven-plugin.version>
     <docker-maven-plugin.version>0.33.0</docker-maven-plugin.version>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
+    <jakarta.jakartaee-api.version>8.0.0</jakarta.jakartaee-api.version>
+    <maven-failsafe-plugin.version>3.0.0-M4</maven-failsafe-plugin.version>
+    <maven-surefire-plugin.version>3.0.0-M4</maven-surefire-plugin.version>
+    <jackson-jaxrs-json-provider.version>2.10.2.1</jackson-jaxrs-json-provider.version>
+    <javax.json.version>1.1.4</javax.json.version>
   </properties>
 
   <dependencies>

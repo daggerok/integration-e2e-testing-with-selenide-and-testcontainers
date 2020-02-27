@@ -68,7 +68,10 @@ jobs:
           cd $GITHUB_WORKSPACE && ./mvnw -f ui docker:start
           wait-port 8080
       - name: Test maven apps
-        run: http :8080/ui/
+        run: |
+          http :8080/ui/
+          http :8080/ui/v1/api/names
+          http :8080/ui/v1/api/greeting
       - name: Stop maven apps
         run: cd $GITHUB_WORKSPACE && ./mvnw -f ui docker:stop docker:remove
 
